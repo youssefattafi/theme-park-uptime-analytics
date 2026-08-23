@@ -1,3 +1,6 @@
+# Synthetic seed data - regenerate deterministically with `make seed`
+data/seed/*.parquet
+
 # Warehouse is a build artifact - rebuilt from parquet by `make build`
 data/warehouse.duckdb
 data/*.duckdb.wal

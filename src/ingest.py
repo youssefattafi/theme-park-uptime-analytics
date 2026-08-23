@@ -111,6 +111,7 @@ def fetch_park_snapshot(park_name: str, park_id: int, captured_at: datetime) -> 
                 "is_open": bool(ride.get("is_open", False)),
                 "wait_time_minutes": ride.get("wait_time"),
                 "source_last_updated": ride.get("last_updated"),
+                "data_source": "queue-times-api",
             }
             for ride in rides
         ]

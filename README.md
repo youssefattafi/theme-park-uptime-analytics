@@ -155,9 +155,19 @@ immediately.
 
 The generator models a realistic demand curve, per-ride failure rates, and
 persistent multi-snapshot outage runs — but **it is simulated data, not observed
-data**, and is labelled as such throughout. Live ingestion via `make ingest`
-uses the real Queue-Times API and the identical downstream code path. Nothing in
-the transformation or dashboard layer knows or cares which source it received.
+data**. Three safeguards keep that fact from ever getting lost:
+
+1. **Separate directories.** Seed data writes to `data/seed/`, live API
+   snapshots to `data/raw/`. They cannot collide on a shared partition file.
+2. **A `data_source` column** is stamped on every row at ingestion and carried
+   through the staging layer, so provenance is queryable at any point in the
+   warehouse.
+3. **Live wins by default.** If both sources are present, `src/load.py` loads
+   live data only and logs a warning. Combining them requires an explicit
+   `--include-seed` flag.
+
+Seed parquet is `.gitignore`d and regenerates deterministically (fixed random
+seed), so the repository never ships simulated numbers as if they were observed.
 
 ---
 
@@ -168,7 +178,7 @@ src/ingest.py              Queue-Times API client, retries, partitioned writes
 src/load.py                Parquet → DuckDB raw layer
 src/config.py              Paths, API config, business rule thresholds
 scripts/seed_demo_data.py  Synthetic history generator
-dbt/models/staging/        Cleaning, business-hours filtering
+dbt/models/staging/        Cleaning, business-hours filtering, provenance passthrough
 dbt/models/marts/          Downtime events, ride dimension, daily aggregates
 app/streamlit_app.py       Executive dashboard
 .github/workflows/         Scheduled ingestion + model rebuild

@@ -192,6 +192,7 @@ def generate(days: int) -> pd.DataFrame:
                     "is_open": is_open,
                     "wait_time_minutes": wait,
                     "source_last_updated": current.isoformat(),
+                    "data_source": "synthetic",
                 }
             )
 
@@ -208,13 +209,13 @@ def main() -> None:
     print(f"Generating {args.days} days of synthetic snapshots...")
     frame = generate(args.days)
 
-    config.RAW_DIR.mkdir(parents=True, exist_ok=True)
-    for existing in config.RAW_DIR.glob("snapshots_*.parquet"):
+    config.SEED_DIR.mkdir(parents=True, exist_ok=True)
+    for existing in config.SEED_DIR.glob("snapshots_*.parquet"):
         existing.unlink()
 
     written = 0
     for day, group in frame.groupby(frame["captured_at"].dt.date):
-        path = config.RAW_DIR / f"snapshots_{day:%Y-%m-%d}.parquet"
+        path = config.SEED_DIR / f"snapshots_{day:%Y-%m-%d}.parquet"
         group.to_parquet(path, index=False)
         written += 1
 
@@ -223,7 +224,7 @@ def main() -> None:
     print(f"  partitions   : {written}")
     print(f"  rides        : {frame['ride_id'].nunique()}")
     print(f"  overall uptime: {open_rate:.1%}")
-    print(f"  -> {config.RAW_DIR}")
+    print(f"  -> {config.SEED_DIR}")
 
 
 if __name__ == "__main__":

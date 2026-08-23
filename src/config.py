@@ -5,7 +5,8 @@ from pathlib import Path
 # ---------------------------------------------------------------- paths
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = PROJECT_ROOT / "data"
-RAW_DIR = DATA_DIR / "raw"
+RAW_DIR = DATA_DIR / "raw"          # live API snapshots
+SEED_DIR = DATA_DIR / "seed"        # synthetic history, never mixed with live
 WAREHOUSE_PATH = DATA_DIR / "warehouse.duckdb"
 
 # ---------------------------------------------------------------- api

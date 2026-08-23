@@ -23,6 +23,7 @@ cleaned as (
         ride_name,
 
         is_open,
+        data_source,
 
         -- A closed ride has no meaningful posted wait. Null it rather than
         -- carrying a zero that would drag down average-wait calculations.
