@@ -187,7 +187,7 @@ fig = px.line(
 fig.data[0].update(line=dict(color="#C7D0E0", width=1.5), name="Daily")
 fig.data[1].update(line=dict(color=ACCENT, width=3), name="7-day average")
 fig.update_layout(height=340, hovermode="x unified", margin=dict(t=10, b=0, l=0, r=0))
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width="stretch")
 
 # ------------------------------------------------------------------ priority
 left, right = st.columns([3, 2])
@@ -215,7 +215,7 @@ with left:
         hover_data={"downtime_event_count": True, "avg_wait_when_open": True},
     )
     fig2.update_layout(height=460, margin=dict(t=10, b=0, l=0, r=0))
-    st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(fig2, width="stretch")
 
 with right:
     st.subheader("Park scorecard")
@@ -233,7 +233,7 @@ with right:
     scorecard["hours"] = scorecard["hours"].round(1)
     st.dataframe(
         scorecard,
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
         column_config={
             "park_name": "Park",
@@ -260,7 +260,7 @@ with right:
             color_discrete_sequence=[ACCENT],
         )
         fig3.update_layout(height=250, margin=dict(t=10, b=0, l=0, r=0))
-        st.plotly_chart(fig3, use_container_width=True)
+        st.plotly_chart(fig3, width="stretch")
 
 st.divider()
 
@@ -290,7 +290,7 @@ if not ev_f.empty:
         aspect="auto",
     )
     fig4.update_layout(height=320, margin=dict(t=10, b=0, l=0, r=0))
-    st.plotly_chart(fig4, use_container_width=True)
+    st.plotly_chart(fig4, width="stretch")
 
 # ------------------------------------------------------------------ detail
 with st.expander("Ride-level detail table"):
@@ -307,7 +307,7 @@ with st.expander("Ride-level detail table"):
             "guest_impact_score",
         ]
     ].sort_values("guest_impact_score", ascending=False)
-    st.dataframe(detail, use_container_width=True, hide_index=True)
+    st.dataframe(detail, width="stretch", hide_index=True)
     st.download_button(
         "Download as CSV",
         detail.to_csv(index=False).encode(),

@@ -9,5 +9,5 @@ dbt-core>=1.7
 dbt-duckdb>=1.7
 
 # Dashboard
-streamlit>=1.30
+streamlit>=1.49
 plotly>=5.18
