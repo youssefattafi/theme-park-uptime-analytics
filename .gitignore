@@ -23,3 +23,6 @@ env/
 .DS_Store
 .vscode/
 .idea/
+
+# dbt local user id
+dbt/.user.yml
