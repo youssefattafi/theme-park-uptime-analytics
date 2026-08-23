@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Landing zone loaded by src/load.py from parquet snapshots.
+    schema: raw
+    tables:
+      - name: wait_time_snapshots
+        description: >
+          One row per ride per capture. The grain is a point-in-time observation,
+          not an event - downtime events are derived downstream.
+        columns:
+          - name: captured_at
+            tests: [not_null]
+          - name: ride_id
+            tests: [not_null]
+          - name: is_open
+            tests: [not_null]

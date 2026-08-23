@@ -1,0 +1,54 @@
+name: Ingest ride status snapshot
+
+on:
+  schedule:
+    # Every 30 minutes during typical park operating hours (13:00-03:00 UTC
+    # covers 9am-11pm Eastern). GitHub cron is best-effort, not guaranteed.
+    - cron: "*/30 13-23 * * *"
+    - cron: "*/30 0-3 * * *"
+  workflow_dispatch:
+
+# Prevent overlapping runs from racing on the same parquet partition.
+concurrency:
+  group: ingest
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Capture snapshot
+        run: python -m src.ingest
+
+      - name: Rebuild warehouse and run models
+        run: |
+          python -m src.load
+          cd dbt && dbt run && dbt test
+
+      - name: Commit new data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/raw
+          if git diff --staged --quiet; then
+            echo "No new data to commit."
+          else
+            git commit -m "data: snapshot $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git pull --rebase --autostash origin main || true
+            git push
+          fi

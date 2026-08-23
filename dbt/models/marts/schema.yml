@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: fct_downtime_events
+    description: >
+      One row per discrete downtime event, derived by collapsing consecutive
+      closed snapshots. Filtered to outages meeting the minimum duration
+      threshold so momentary blips are not counted as breakdowns.
+    columns:
+      - name: downtime_event_id
+        tests: [unique, not_null]
+      - name: ride_id
+        tests: [not_null]
+      - name: downtime_minutes
+        tests: [not_null]
+      - name: severity_band
+        tests:
+          - accepted_values:
+              values: ['Brief (<30m)', 'Moderate (30-60m)', 'Significant (1-2h)', 'Major (2h+)']
+
+  - name: dim_rides
+    description: Ride dimension with full-history reliability and demand-impact profile.
+    columns:
+      - name: ride_id
+        tests: [unique, not_null]
+      - name: uptime_pct
+        tests: [not_null]
+
+  - name: agg_ride_daily
+    description: Daily uptime and wait KPIs per ride.
+    columns:
+      - name: uptime_pct
+        tests: [not_null]
+
+  - name: agg_park_daily
+    description: Executive-grain daily scorecard per park.
+    columns:
+      - name: park_uptime_pct
+        tests: [not_null]

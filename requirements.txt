@@ -1,0 +1,13 @@
+# Ingestion
+requests>=2.31
+pandas>=2.0
+pyarrow>=14.0
+
+# Warehouse + transformation
+duckdb>=0.10
+dbt-core>=1.7
+dbt-duckdb>=1.7
+
+# Dashboard
+streamlit>=1.30
+plotly>=5.18

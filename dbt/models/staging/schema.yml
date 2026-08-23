@@ -1,0 +1,12 @@
+version: 2
+
+models:
+  - name: stg_snapshots
+    description: Business-hours snapshots with closed-ride waits nulled out.
+    columns:
+      - name: ride_id
+        tests: [not_null]
+      - name: captured_at
+        tests: [not_null]
+      - name: is_open
+        tests: [not_null]
